@@ -4,10 +4,10 @@ import com.applitools.eyes.BatchInfo;
 import com.applitools.eyes.ProxySettings;
 import com.applitools.eyes.RectangleSize;
 import com.applitools.eyes.fluent.BatchClose;
-import com.yanirta.BatchObjects.Batch;
-import org.apache.commons.cli.CommandLine;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class Config {
     public RectangleSize viewport;
@@ -28,7 +28,7 @@ public class Config {
     public ProxySettings proxy_settings = null;
     public String matchWidth = null;
     public String matchHeight = null;
-    private ArrayList<String> batchesIdListForBatchClose;
+    private HashSet<String> batchesIdListForBatchClose = new HashSet<>();
 
     public void setViewport(String viewport) {
         if (viewport == null) return;
@@ -63,46 +63,29 @@ public class Config {
     }
 
     //set batch related info
-    public void setBatchInfo(CommandLine cmd) {
-        //initialize batches Id List for batch close
-        initializeBatchesIdList();
-
-        //set notify on complete
-        notifyOnComplete = cmd.hasOption("nc");
-
+    public void setBatchInfo(String flatBatchArg, boolean notifyOnComplete) {
+        this.notifyOnComplete = notifyOnComplete;
         //set batch- take flat batch if described- get environment variables values unless overwritten
-        String batchNameToAdd = System.getenv("JOB_NAME");;
-        String batchIdToAdd = System.getenv("APPLITOOLS_BATCH_ID");;
+        String batchNameToAdd = System.getenv("JOB_NAME");
+        String batchIdToAdd = System.getenv("APPLITOOLS_BATCH_ID");
 
 
         //set flat batch- config.notify complete must be before this set
-        if (cmd.hasOption("fb")) {
+        if (StringUtils.isNoneBlank(flatBatchArg)) {
+            String[] batch_parts = flatBatchArg.split("<>");
             //check if batch id was specified
-            String batchValue = cmd.getOptionValue("fb");
-            batchNameToAdd = batchValue;
-            batchIdToAdd = null;
-
-            if (batchValue.contains("<>")) {
-                batchNameToAdd = batchValue.substring(0,batchValue.indexOf('<'));
-                batchIdToAdd = batchValue.substring(batchValue.indexOf('>') + 1);
-            }
+            batchNameToAdd = batch_parts[0];
+            batchIdToAdd = batch_parts.length > 1 ? batch_parts[1] : null;
         }
 
         //if flat batch name is not empty initialize flat batch
-        if (Utils.ne(batchNameToAdd)) {
-            flatBatch = new Batch(batchNameToAdd, this).batchInfo();
+        if (StringUtils.isNoneBlank(batchNameToAdd)) {
+            flatBatch = new BatchInfo(batchNameToAdd);
             //if flat batch id is not empty set batch id
-            if (Utils.ne(batchIdToAdd)) {
+            if (StringUtils.isNoneBlank(batchIdToAdd))
                 flatBatch.setId(batchIdToAdd);
-            }
         }
     }
-
-    //initialize batches id list
-    public void initializeBatchesIdList() {
-        batchesIdListForBatchClose = new ArrayList<>();
-    }
-
 
     //add batch id to list
     public void addBatchIdToCloseList(String batchId) {
@@ -110,7 +93,7 @@ public class Config {
     }
 
     //close batches
-    public void closeBatches(){
+    public void closeBatches() {
         if (notifyOnComplete) {
             BatchClose batchClose = new BatchClose();
             batchClose.setApiKey(apiKey);
@@ -118,7 +101,7 @@ public class Config {
                 batchClose.setUrl(serverUrl);
             if (proxy_settings != null)
                 batchClose.setProxy(proxy_settings);
-            batchClose.setBatchId(batchesIdListForBatchClose).close();
+            batchClose.setBatchId(new ArrayList(batchesIdListForBatchClose)).close();
         }
     }
 }

@@ -11,9 +11,8 @@ public abstract class BatchBase implements IBatch {
     private List<TestBase> tests_ = new ArrayList<>();
     private BatchInfo batchInfo_;
 
-    public BatchBase(BatchInfo batchInfo, boolean noc) {
+    public BatchBase(BatchInfo batchInfo) {
         this.batchInfo_ = batchInfo;
-        this.batchInfo_.setNotifyOnCompletion(noc);
     }
 
     public void addTests(List<TestBase> test) {

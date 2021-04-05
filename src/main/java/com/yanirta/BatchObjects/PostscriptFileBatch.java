@@ -67,7 +67,7 @@ public class PostscriptFileBatch extends BatchBase {
     }
 
     public PostscriptFileBatch(File file, Config conf) throws IOException, RendererException, DocumentException {
-        super(new BatchInfo(file.getName()), conf.notifyOnComplete);
+        super(new BatchInfo(file.getName()));
         this.renderer_.setResolution(Math.round(conf.DocumentConversionDPI));
         this.document_.load(file);
         this.pageList_ = Utils.parsePagesNotation(conf.pages);

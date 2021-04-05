@@ -69,7 +69,9 @@ public class ImageTester {
             config.sequenceName = cmd.getOptionValue("sq", null);
             config.setViewport(cmd.getOptionValue("vs", null));
             config.setMatchSize(cmd.getOptionValue("ms", null));
-            config.setBatchInfo(cmd);
+            config.setBatchInfo(
+                    cmd.getOptionValue("fb", null),
+                    cmd.hasOption("nc"));
 
             File root = new File(cmd.getOptionValue("f", "."));
             int maxThreads = Integer.parseInt(cmd.getOptionValue("th", "3"));

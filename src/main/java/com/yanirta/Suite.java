@@ -61,7 +61,7 @@ public class Suite {
                     tests_.add(test);
             }
 
-            Batch currBatch = new Batch(file, conf);
+            Batch currBatch = new Batch(file);
 
             for (File child : file.listFiles()) {
                 Suite curr = new Suite(child, conf, executor);

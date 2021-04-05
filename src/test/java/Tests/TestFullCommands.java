@@ -92,13 +92,19 @@ public class TestFullCommands {
 
     @Test
     public void testBatchNotificationsWithFlatBatchAndId() {
-        ImageTester.main("-f TestData/b/c/JustPDF/Lorem2.pdf -nc -fb EmailNotificationBatch<>asjkhgdfdjskhhghjfgs".split(" "));
+        ImageTester.main("-f TestData/b/c/JustPDF/Lorem2.pdf -fb EmailNotificationBatch<>customBatchID -nc".split(" "));
     }
 
     @Test
     public void testBatchNotificationsWithAll() {
-        ImageTester.main("-f  TestData/ -nc".split(" "));
+        ImageTester.main("-f TestData/ -nc".split(" "));
     }
+
+    @Test
+    public void testBatchNotificationsMultibatch() {
+        ImageTester.main("-f TestData/b/c -nc".split(" "));
+    }
+
 
     @Test
     public void testImageScaling1() {

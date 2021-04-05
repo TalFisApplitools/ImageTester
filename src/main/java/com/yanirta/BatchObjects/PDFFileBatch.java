@@ -67,7 +67,7 @@ public class PDFFileBatch extends BatchBase {
     }
 
     public PDFFileBatch(File file, Config conf) throws IOException {
-        super(new BatchInfo(file.getName()), conf.notifyOnComplete);
+        super(new BatchInfo(file.getName()));
         this.logger_ = conf.logger;
         this.pageList_ = Utils.parsePagesNotation(conf.pages);
         this.document_ = PDDocument.load(file, conf.pdfPass);

@@ -32,8 +32,11 @@ public class TestExecutor {
             setBatch(eyes, overrideBatch, config_);
             TestResults result = test.runSafe(eyes);
             eyes.abortIfNotClosed();
+
             //add batch to close
-            addBatchToClose(eyes);
+            config_.addBatchIdToCloseList(eyes.getBatch().getId());
+            // Clear batch
+            eyes.setBatch(null);
             if (test instanceof IDisposable)
                 ((IDisposable) test).dispose();
             long endTime = System.nanoTime();
@@ -68,8 +71,10 @@ public class TestExecutor {
         } else if (overrideBatch != null) {
             batchToSet = overrideBatch;
         } else {
-            batchToSet = new Batch(config).batchInfo();
+            batchToSet = eyes.getBatch();
         }
+
+        batchToSet.setNotifyOnCompletion(config_.notifyOnComplete);
 
         //set batch
         eyes.setBatch(batchToSet);
@@ -77,11 +82,5 @@ public class TestExecutor {
         //set sequence name if necessary
         if (config_.sequenceName != null && !StringUtils.isEmpty(config_.sequenceName))
             eyes.getBatch().setSequenceName(config_.sequenceName);
-    }
-
-    //add batch to batch to close list in order to get batch notifications
-    public void addBatchToClose(Eyes eyes) {
-        config_.addBatchIdToCloseList(eyes.getBatch().getId());
-        eyes.setBatch(null);
     }
 }
