@@ -1,4 +1,4 @@
-# Image Tester [Download from here](https://bintray.com/applitoolseyes/generic/ImageTester/_latestVersion)
+# Image Tester [Download from here](https://applitools.jfrog.io/artifactory/ImageTester/)
 
 ImageTester is a Cli tool to perform visual tests on images or PDF files. 
 
